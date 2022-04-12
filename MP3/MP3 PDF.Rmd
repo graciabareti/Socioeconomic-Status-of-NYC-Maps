@@ -1,0 +1,117 @@
+
+---
+title: "Socioeconomic Status of NYC Boroughs"
+date: "Tuesday, November 23rd, 2021"
+output:
+  pdf_document:
+    toc: no
+    df_print: paged
+  html_document:
+    toc: no
+    df_print: paged
+---
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+# Do not edit this chunk unless you know what you are doing
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE, fig.width = 16/2, fig.height = 9/2
+)
+```
+
+```{r, echo=FALSE}
+# Load all packages here
+library(tidyverse)
+library(sf)
+```
+
+## By:Gracia Bareti & Denisse Manzo Gonzalez
+
+
+
+#  Introduction
+
+The data below demonstrates a breakdown of New York City's five boroughs^[https://data.cityofnewyork.us/City-Government/Borough-Boundaries/tqmj-j8zm] using choropleth mapping to show the 2019 median household income^[https://app.coredata.nyc/?mlb=false&ntii=hh_inc_med_adj&ntr=Borough&mz=12&vtl=https%3A%2F%2Fthefurmancenter.carto.com%2Fu%2Fnyufc%2Fapi%2Fv2%2Fviz%2F98d1f16e-95fd-4e52-a2b1-b7abaf634828%2Fviz.json&mln=true&mlp=true&mlat=40.728993&ptsb=&nty=2019&mb=roadmap&pf=%7B%22subsidies%22%3Atrue%7D&md=table&mlv=false&mlng=-73.989219&btl=Borough&atp=neighborhoods]
+for each borough. Our group wanted to visualize the growing issue of gentrification within NYC neighborhoods^[ https://www.nytimes.com/2021/08/17/realestate/black-homeowners-gentrification.html] in particular Brooklyn and the
+ effect it has on communities predominantly on low income people of color, sparking our interest in viewing the income within boroughs. The choropleth map shows that Staten Island and Manhattan were the two boroughs with the highest median income distributions ranging around 80,000-90,000 dollars. The borough with the lowest median income distribution was the Bronx with median income ranging at or lower than 50,000 dollars.
+In addition, we wanted to provide a visualization that showed the relation between income and greenspaces^[https://data.cityofnewyork.us/Recreation/Green-Spaces/mwfu-376i] within the five boroughs; given growing research on the positive impact that greenspaces provide communities.^[https://www.nrpa.org/parks-recreation-magazine/2017/april/the-health-benefits-of-small-parks-and-green-spaces/ 
+] We found that despite Staten Island having the greatest income they held the least greenspace while the Bronx, which obtained the lowest income, was estimated to have the most green space. 
+
+
+
+
+# Map
+
+```{r, echo = FALSE}
+# Put code to create your static map here:
+nyc_boroughs <- "Borough Boundaries/" %>%
+  read_sf()
+borough_medianhouseholdincome2020 <- read_csv("borough-medianhouseholdincome2020.csv")
+
+green_spaces <- "Green Spaces/" %>% 
+  read_sf()
+
+gs2 <- green_spaces %>% 
+  filter(grepl("Park",landuse)) %>% 
+  filter(landuse!="Parkway")
+
+ borough_medianhouseholdincome2020<-
+   borough_medianhouseholdincome2020 %>% 
+   rename(boro_name=Borough)
+ 
+ borough_householdincome2020<- 
+   borough_medianhouseholdincome2020 %>%
+inner_join(nyc_boroughs,ID="boro_name")
+ 
+ borough_householdincome2019 <- 
+   borough_householdincome2020
+   
+
+borough_householdincome2019 <- borough_householdincome2019 %>% 
+  mutate(
+    lon = purrr::map_dbl(geometry, ~st_centroid(.x)[[1]]),
+    lat = purrr::map_dbl(geometry, ~st_centroid(.x)[[2]])
+  )   
+
+borough_householdincome2019 <- borough_householdincome2019 %>% rename(income="2019")
+
+borough_householdincome2019 <- borough_householdincome2019 %>% 
+  mutate(income_new = cut_number(income,3))
+
+ggplot()+
+  geom_sf(
+    data=borough_householdincome2019,
+    aes(fill=income,geometry=geometry),
+    size=.5,col="black") +
+    scale_fill_continuous(low = "#56B1F7",high = "#132B43")+
+  geom_text(
+    data=borough_householdincome2019,
+    aes(x = lon, y = lat, label = boro_name,color="white"))+
+  labs(title= "2019 Median Household Income in NYC Boroughs",
+       x="Latitude",
+       y="Longitude",
+       color="Text Color")
+
+ggplot()+
+  geom_sf(
+    data=borough_householdincome2019,
+    aes(fill=income,geometry=geometry),
+    size=.5,
+    col="black") +
+    scale_fill_continuous(
+      low = "#56B1F7",
+      high = "#132B43")+
+  geom_sf(data=gs2,col="green")+
+  labs(title= "Green Spaces in NYC Boroughs",
+       x="Latitude",
+       y="Longitude")
+
+```
+
+
+
+# Additional Analysis
+Brooklyn on the map shows a range between 55,000-70,000 dollars. 
+The median household income in Brooklyn in 2010 was  49,501 dollars and the median household income in Brooklyn in 2019 was 68,081 dollars, which is a big increase between those ten years.^[https://app.coredata.nyc/?mlb=false&ntii=hh_inc_med_adj&ntr=Borough&mz=12&vtl=https%3A%2F%2Fthefurmancenter.carto.com%2Fu%2Fnyufc%2Fapi%2Fv2%2Fviz%2F98d1f16e-95fd-4e52-a2b1-b7abaf634828%2Fviz.json&mln=true&mlp=true&mlat=40.728993&ptsb=&nty=2019&mb=roadmap&pf=%7B%22subsidies%22%3Atrue%7D&md=table&mlv=false&mlng=-73.989219&btl=Borough&atp=neighborhoods ]The population of Black residents in Brooklyn has also seen a decline in those 10 years by 8.7%^[https://www.nydailynews.com/news/politics/new-york-elections-government/ny-census-results-new-york-city-black-new-yorkers-20210813-kqew232yyreddferawlcjvdnni-story.html], which aligns with the NYC times article which discusses gentrification issues in Crown Heights, Brooklyn where many Black residents are being forced out of their neighborhoods due to rising housing prices.^[https://www.nytimes.com/2021/08/17/realestate/black-homeowners-gentrification.html]
+
+In addition, our findings of the Bronx obtaining the lowest median income, yet greatest estimate of greenspace, was surprising, as often times higher-income areas project greater greenspaces.^[https://phys.org/news/2020-06-income-disparities-access-green-spaces.html] It also leads to our prediction that businesses might take advantage of the lower-income communities within the area to further advance business interest in the future, Bronx in the future may be a target for gentrification. 
+
