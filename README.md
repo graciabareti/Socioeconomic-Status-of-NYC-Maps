@@ -1,1 +1,9 @@
 # Socioeconomic-Status-of-NYC-Maps
+
+The data below demonstrates a breakdown of New York City’s five boroughs1 using choropleth mapping to show the 2019 median household income2 for each borough. Our group wanted to visualize the growing issue of gentrification within NYC neighborhoods3 in particular Brooklyn and the effect it has on communities predominantly on low income people of color, sparking our interest in viewing the income within boroughs. The choropleth map shows that Staten Island and Manhattan were the two boroughs with the highest median income distributions ranging around 80,000-90,000 dollars. The borough with the lowest median income distribution was the Bronx with median income ranging at or lower than 50,000 dollars. In addition, we wanted to provide a visualization that showed the relation between income and greenspaces4 within the five boroughs; given growing research on the positive impact that greenspaces provide communities.5 We found that despite Staten Island having the greatest income they held the least greenspace while the Bronx, which obtained the lowest income, was estimated to have the most green space.
+1 https://data.cityofnewyork.us/City- Government/Borough- Boundaries/tqmj- j8zm
+2https://app.coredata.nyc/?mlb=false&ntii=hh_inc_med_adj&ntr=Borough&mz=12&vtl=https%3A%2F% 2Fthefurmancenter.carto.com%2Fu%2Fnyufc%2Fapi%2Fv2%2Fviz%2F98d1f16e- 95fd- 4e52- a2b1- b7abaf634828%2Fviz.json& mln=true&mlp=true&mlat=40.728993&ptsb=&nty=2019&mb=roadmap&pf=%7B%22subsidies%22%3Atrue%7D&md= table&mlv=false&mlng=-73.989219&btl=Borough&atp=neighborhoods
+3 https://www.nytimes.com/2021/08/17/realestate/black- homeowners- gentrification.html
+4 https://data.cityofnewyork.us/Recreation/Green- Spaces/mwfu- 376i 5https://www.nrpa.org/parks-recreation-magazine/2017/april/the-health-benefits-of-small-parks-and-green-spaces/
+
+[MP3-PDF.pdf](https://github.com/graciabareti/Socioeconomic-Status-of-NYC-Maps/files/8475351/MP3-PDF.pdf)
